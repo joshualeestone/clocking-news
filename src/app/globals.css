@@ -34,16 +34,34 @@ html.dark a:visited { color: #333333; }
   animation: pulseSoft 2.6s ease-out infinite;
 }
 @keyframes pulseSo
-/* Link styles */
-a {
-  @apply text-blue-600 dark:text-blue-400;
-}
+/* Global link styles */
 
-a:visited {
-  @apply text-gray-600 dark:visited:text-gray-400;
+/* Light mode (default) */
+a {
+  color: #000000;       /* default black */
+  text-decoration: none; /* no underline */
 }
 
 a:hover {
-  @apply underline;
+  color: #999999;       /* hover gray */
 }
+
+a:visited {
+  color: #cccccc;       /* visited light gray */
+}
+
+/* Dark mode */
+.dark a {
+  color: #ffffff;       /* default white */
+  text-decoration: none;
+}
+
+.dark a:hover {
+  color: #666666;       /* hover medium gray */
+}
+
+.dark a:visited {
+  color: #333333;       /* visited dark gray */
+}
+
 
