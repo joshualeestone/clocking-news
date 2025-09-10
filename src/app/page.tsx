@@ -1,6 +1,6 @@
 // src/app/page.tsx
 import { readAllFeeds } from "@/lib/rss";
-
+import ThemeToggle from "@/components/ThemeToggle";
 export const revalidate = 60; // rebuild at most once per minute
 
 export default async function Home() {
