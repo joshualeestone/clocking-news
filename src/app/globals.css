@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Base font */
+@layer base {
+  html { @apply font-sans; }
+}
+
+/* Little helpers used by page.tsx */
+.animated-header { @apply bg-gradient-to-r from-zinc-900 to-black sticky top-0 z-10; }
+.pulse-green { animation: pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity:.5 } 50% { opacity:1 } }
+.news-link { @apply underline-offset-2 hover:underline hover:opacity-80; }
