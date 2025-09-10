@@ -56,7 +56,7 @@ async function readOne(url: string) {
   }
 }
 
-export async function readAllFeeds(limit = 50) {
+export async function readAllFeeds(limit = 100) {
   const lists = await Promise.all(FEEDS.map(readOne));
   const flat = lists.flat().filter((x) => x.title && x.link);
 
