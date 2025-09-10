@@ -1,5 +1,6 @@
 import { FEEDS } from "./feeds";
 import { XMLParser } from "fast-xml-parser";
+import he from "he"; // ← decoder for HTML entities
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -7,18 +8,32 @@ const parser = new XMLParser({
   parseTagValue: true,
 });
 
+// Some feeds sneak HTML tags into titles; strip them.
+function stripTags(s: string) {
+  return s.replace(/<[^>]*>/g, "");
+}
+
 function normalizeItem(raw: any, source: string) {
-  const title = String(raw?.title ?? "").trim();
-  const link =
-    raw?.link?.["@_href"] || raw?.link ||
-    (raw?.guid?.["@_isPermaLink"] === "true" ? raw?.guid : raw?.guid) || "";
+  const rawTitle = String(raw?.title ?? "").trim();
+
+  // Decode entities (&quot;, &#8217;, &#x2019; …) and remove any tags
+  const title = stripTags(he.decode(rawTitle));
+
+  const rawLink =
+    raw?.link?.["@_href"] ||
+    raw?.link ||
+    (raw?.guid?.["@_isPermaLink"] === "true" ? raw?.guid : raw?.guid) ||
+    "";
+
+  const link = typeof rawLink === "string" ? rawLink : String(rawLink || "");
+
   const pub =
     raw?.pubDate || raw?.published || raw?.updated || raw?.["dc:date"] || null;
 
   return {
     id: (link || title).slice(0, 400),
     title,
-    link: typeof link === "string" ? link : String(link || ""),
+    link,
     pubDate: pub ? new Date(pub).getTime() : 0,
     source,
   };
@@ -45,6 +60,7 @@ export async function readAllFeeds(limit = 50) {
   const lists = await Promise.all(FEEDS.map(readOne));
   const flat = lists.flat().filter((x) => x.title && x.link);
 
+  // de-dupe by normalized link
   const seen = new Set<string>();
   const deduped = flat.filter((x) => {
     const key = x.link.replace(/^https?:\/\//, "").replace(/\/$/, "");
