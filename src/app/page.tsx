@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { readAllFeeds } from "@/lib/rss";
-import ThemeToggle from "@/components/ThemeToggle";
-import { MAX_ITEMS } from "@/lib/config";
-import { FEEDS } from "@/lib/feeds";
+import { readAllFeeds } from "../lib/rss";
+import ThemeToggle from "../components/ThemeToggle";
+import { MAX_ITEMS } from "../lib/config";
+import { FEEDS } from "../lib/feeds";
 
 export const dynamic = "force-dynamic"; // render on request
 
