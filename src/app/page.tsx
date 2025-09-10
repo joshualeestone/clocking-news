@@ -3,16 +3,14 @@ import { readAllFeeds } from "@/lib/rss";
 import ThemeToggle from "@/components/ThemeToggle";
 import { MAX_ITEMS } from "@/lib/config";
 
-export const dynamic = "force-dynamic"; // do not pre-render at build; render on request
+export const dynamic = "force-dynamic"; // render at request time (no build-time prerender)
 
 type PageProps = { searchParams?: { limit?: string } };
 
 export default async function Home({ searchParams }: PageProps) {
-  const requested = Number(searchParams?.limit ?? "");
+  const req = Number(searchParams?.limit ?? "");
   const limit =
-    Number.isFinite(requested) && requested > 0
-      ? Math.min(requested, MAX_ITEMS)
-      : MAX_ITEMS;
+    Number.isFinite(req) && req > 0 ? Math.min(req, MAX_ITEMS) : MAX_ITEMS;
 
   const items = await readAllFeeds(limit);
 
@@ -39,7 +37,9 @@ export default async function Home({ searchParams }: PageProps) {
       <ol className="px-4 py-4 space-y-3">
         {items.map((it, i) => {
           let host = "";
-          try { host = new URL(it.link).hostname.replace(/^www\./, ""); } catch {}
+          try {
+            host = new URL(it.link).hostname.replace(/^www\./, "");
+          } catch {}
           return (
             <li key={it.id} className="leading-snug">
               <a
@@ -60,5 +60,13 @@ export default async function Home({ searchParams }: PageProps) {
         <div className="px-4 pb-8">
           <Link
             prefetch={false}
-            href={`/?limit=${nextL
-
+            href={`/?limit=${nextLimit}`}
+            className="inline-block text-sm underline opacity-80 hover:opacity-100"
+          >
+            Show 50 more
+          </Link>
+        </div>
+      )}
+    </main>
+  );
+}
