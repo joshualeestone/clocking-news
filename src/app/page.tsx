@@ -8,13 +8,18 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white">
-      <div className="animated-header px-4 py-2 text-xs uppercase tracking-wide">
-        <div className="flex items-center gap-3">
-          <span className="font-bold">Clocking.News</span>
-          <span className="h-2 w-2 rounded-full bg-green-500 pulse-green" />
-          <span className="opacity-90">Live</span>
-        </div>
-      </div>
+      <div className="animated-header px-4 py-2 text-xs uppercase tracking-wide text-white">
+        <div className="flex items-center justify-between gap-3">
+          {/* Left side: brand + live */}
+          <div className="flex items-center gap-3">
+            <span className="font-bold">Clocking.News</span>
+            <span className="h-2 w-2 rounded-full bg-green-500 pulse-green" />
+            <span className="opacity-90">Live</span>
+          </div>
+    {/* Right side: toggle */}
+    <ThemeToggle />
+  </div>
+</div>
 
       <div className="px-4 py-3 border-b border-white/10 text-sm">
         <span className="opacity-75">Top (deduped) — {items.length} items</span>
