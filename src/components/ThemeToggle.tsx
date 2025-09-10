@@ -1,46 +1,59 @@
 "use client";
+
 import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
-    // Sync with current DOM on mount
-    setIsDark(document.documentElement.classList.contains("dark"));
+    setMounted(true);
+    const d = document.documentElement.classList.contains("dark");
+    setDark(d);
   }, []);
 
-  function toggle() {
-    const html = document.documentElement;
-    const next = !isDark;
-    setIsDark(next);
-    if (next) {
-      html.classList.add("dark");
+  useEffect(() => {
+    if (!mounted) return;
+    if (dark) {
+      document.documentElement.classList.add("dark");
       localStorage.setItem("theme", "dark");
     } else {
-      html.classList.remove("dark");
+      document.documentElement.classList.remove("dark");
       localStorage.setItem("theme", "light");
     }
-  }
+  }, [dark, mounted]);
+
+  if (!mounted) return null;
 
   return (
     <button
-      onClick={toggle}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      className="inline-flex items-center gap-2 rounded-full px-3 py-1
-                 bg-white/10 hover:bg-white/20 dark:bg-white/10 dark:hover:bg-white/20
-                 text-xs"
+      type="button"
+      onClick={() => setDark(!dark)}
+      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+      className="inline-flex items-center justify-center h-8 w-8 rounded-md border border-white/20 bg-white/10 backdrop-blur
+                 text-white hover:bg-white/20 dark:border-white/20 dark:text-white"
     >
-      {/* Moon / Sun inline SVGs so you don't need to provide assets */}
-      {isDark ? (
-        <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor" d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z"/>
+      {dark ? (
+        /* Sun icon */
+        <svg
+          viewBox="0 0 24 24"
+          className="h-4 w-4"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path d="M12 4.5a1 1 0 0 1 1-1h.5a1 1 0 1 1 0 2H13a1 1 0 0 1-1-1ZM6.22 6.22a1 1 0 0 1 1.42 0l.35.35a1 1 0 1 1-1.42 1.42l-.35-.35a1 1 0 0 1 0-1.42ZM4.5 11a1 1 0 0 1 1-1h.5a1 1 0 1 1 0 2H5.5a1 1 0 0 1-1-1Zm8.5 8.5a1 1 0 0 1-1 1H11a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1Zm7-7.5a1 1 0 0 1-1 1h-.5a1 1 0 1 1 0-2h.5a1 1 0 0 1 1 1ZM16 7.57a4.43 4.43 0 1 1-8.86 0 4.43 4.43 0 0 1 8.86 0ZM17.78 6.22a1 1 0 0 1 0 1.42l-.35.35a1 1 0 1 1-1.42-1.42l.35-.35a1 1 0 0 1 1.42 0ZM18.5 17a1 1 0 0 1-1.42 1.42l-.35-.35a1 1 0 1 1 1.42-1.42l.35.35ZM6.22 17.78a1 1 0 0 1-1.42 0 1 1 0 0 1 0-1.42l.35-.35a1 1 0 1 1 1.42 1.42l-.35.35Z" />
         </svg>
       ) : (
-        <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor" d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.8 1.42-1.42zM1 13h3v-2H1v2zm10 10h2v-3h-2v3zM4.96 19.04l1.41 1.41 1.8-1.79-1.41-1.41-1.8 1.79zM20 13h3v-2h-3v2zm-1.95 7.46l1.41-1.41-1.79-1.8-1.41 1.41 1.79 1.8zM13 1h-2v3h2V1zm-7.05 4.05l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM12 6a6 6 0 100 12A6 6 0 0012 6z"/>
+        /* Moon icon */
+        <svg
+          viewBox="0 0 24 24"
+          className="h-4 w-4"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 1 0 9.79 9.79Z" />
         </svg>
       )}
-      <span>{isDark ? "Dark" : "Light"}</span>
     </button>
   );
 }
