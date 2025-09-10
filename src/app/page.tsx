@@ -2,8 +2,19 @@ import Link from "next/link";
 import { readAllFeeds } from "@/lib/rss";
 import ThemeToggle from "@/components/ThemeToggle";
 import { MAX_ITEMS } from "@/lib/config";
+import { FEEDS } from "@/lib/feeds";
 
-export const dynamic = "force-dynamic"; // render at request time (no build-time prerender)
+export const dynamic = "force-dynamic"; // render on request
+
+// Unique news-site count from FEEDS (hostname-based)
+const SITE_COUNT = (() => {
+  const set = new Set<string>();
+  for (const u of FEEDS) {
+    try { set.add(new URL(u).hostname.replace(/^www\./, "")); }
+    catch { set.add(u); }
+  }
+  return set.size;
+})();
 
 function timeAgo(ts: number, now: number): string {
   if (!ts) return "";
@@ -38,21 +49,24 @@ export default async function Home({ searchParams }: PageProps) {
 
   return (
     <main className="min-h-screen bg-white text-black dark:bg-black dark:text-white">
+      {/* Header */}
       <div className="px-4 py-2 text-xs uppercase tracking-wide">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <span className="font-bold">Clocking.News</span>
             <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-            <span className="opacity-90">Live</span>
+            <span className="opacity-90">{SITE_COUNT} news sites reviewed by AI</span>
           </div>
           <ThemeToggle />
         </div>
       </div>
 
+      {/* Subheader */}
       <div className="px-4 py-3 border-b border-black/10 dark:border-white/10 text-sm">
-        <span className="opacity-75">Top (deduped) — {items.length} items</span>
+        <span className="opacity-75">Top {MAX_ITEMS} Global</span>
       </div>
 
+      {/* List */}
       <ol className="px-4 py-4 space-y-3">
         {items.map((it, i) => {
           const ago = it.pubDate ? timeAgo(it.pubDate, now) : "";
