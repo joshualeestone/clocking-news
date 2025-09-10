@@ -1,6 +1,8 @@
+// src/lib/rss.ts
 import { FEEDS } from "./feeds";
 import { XMLParser } from "fast-xml-parser";
-import he from "he"; // ← decoder for HTML entities
+import he from "he";
+import { MAX_ITEMS } from "./config"; // ← add this
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -15,8 +17,6 @@ function stripTags(s: string) {
 
 function normalizeItem(raw: any, source: string) {
   const rawTitle = String(raw?.title ?? "").trim();
-
-  // Decode entities (&quot;, &#8217;, &#x2019; …) and remove any tags
   const title = stripTags(he.decode(rawTitle));
 
   const rawLink =
@@ -26,7 +26,6 @@ function normalizeItem(raw: any, source: string) {
     "";
 
   const link = typeof rawLink === "string" ? rawLink : String(rawLink || "");
-
   const pub =
     raw?.pubDate || raw?.published || raw?.updated || raw?.["dc:date"] || null;
 
@@ -56,7 +55,8 @@ async function readOne(url: string) {
   }
 }
 
-export async function readAllFeeds(limit = 100) {
+// Use env-configured default if caller doesn't pass a limit
+export async function readAllFeeds(limit: number = MAX_ITEMS) {
   const lists = await Promise.all(FEEDS.map(readOne));
   const flat = lists.flat().filter((x) => x.title && x.link);
 
