@@ -34,27 +34,32 @@ html { font-size: calc(16px * var(--font-scale)); }
   100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
 }
 
-/* --- Global link + body styles --- */
+/* --- Global body styles --- */
 @layer base {
   body {
     @apply bg-white text-black dark:bg-black dark:text-white;
   }
+}
 
-  a {
-    @apply no-underline;
-  }
+/* --- News link styles only --- */
+.news-link {
+  color: #000000;       /* default black in light mode */
+  text-decoration: none;
+}
+.news-link:hover {
+  color: #999999;       /* hover gray */
+}
+.news-link:visited {
+  color: #cccccc;       /* visited light gray */
+}
 
-  /* Light mode links */
-  a {
-    color: #000000;
-  }
-  a:hover { color: #999999; }
-  a:visited { color: #cccccc; }
-
-  /* Dark mode links */
-  .dark a {
-    color: #ffffff;
-  }
-  .dark a:hover { color: #666666; }
-  .dark a:visited { color: #333333; }
+.dark .news-link {
+  color: #ffffff;       /* default white in dark mode */
+  text-decoration: none;
+}
+.dark .news-link:hover {
+  color: #666666;       /* hover medium gray */
+}
+.dark .news-link:visited {
+  color: #333333;       /* visited dark gray */
 }
