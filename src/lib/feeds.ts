@@ -1,1 +1,20 @@
-export async function fetchFeeds(){ return [] }
+export const FEEDS: string[] = [
+  // General / politics
+  "https://rss.cnn.com/rss/edition.rss",
+  "https://feeds.foxnews.com/foxnews/latest",
+  "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+  "https://feeds.bbci.co.uk/news/rss.xml",
+  "https://www.aljazeera.com/xml/rss/all.xml",
+  "https://www.reuters.com/world/us/rss",
+  "https://www.reuters.com/world/rss",
+  "https://www.rt.com/rss/",
+
+  // Tech / business
+  "https://www.theverge.com/rss/index.xml",
+  "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+
+  // Entertainment
+  "https://www.rollingstone.com/music/music-news/feed/",
+  "https://www.tmz.com/rss.xml",
+  "https://nypost.com/entertainment/feed/",
+];
