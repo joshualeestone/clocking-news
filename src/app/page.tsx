@@ -5,6 +5,24 @@ import { MAX_ITEMS } from "@/lib/config";
 
 export const dynamic = "force-dynamic"; // render at request time (no build-time prerender)
 
+function timeAgo(ts: number, now: number): string {
+  if (!ts) return "";
+  let s = Math.max(0, Math.floor((now - ts) / 1000));
+  const m = Math.floor(s / 60);
+  const h = Math.floor(m / 60);
+  const d = Math.floor(h / 24);
+  const w = Math.floor(d / 7);
+  const mo = Math.floor(d / 30);
+  const y = Math.floor(d / 365);
+  if (s < 60) return `${s}s ago`;
+  if (m < 60) return `${m}m ago`;
+  if (h < 24) return `${h}h ago`;
+  if (d < 7) return `${d}d ago`;
+  if (w < 5) return `${w}w ago`;
+  if (mo < 12) return `${mo}mo ago`;
+  return `${y}y ago`;
+}
+
 type PageProps = { searchParams?: { limit?: string } };
 
 export default async function Home({ searchParams }: PageProps) {
@@ -13,6 +31,7 @@ export default async function Home({ searchParams }: PageProps) {
     Number.isFinite(req) && req > 0 ? Math.min(req, MAX_ITEMS) : MAX_ITEMS;
 
   const items = await readAllFeeds(limit);
+  const now = Date.now();
 
   const canShowMore = limit < MAX_ITEMS && items.length >= limit;
   const nextLimit = Math.min(limit + 50, MAX_ITEMS);
@@ -36,10 +55,7 @@ export default async function Home({ searchParams }: PageProps) {
 
       <ol className="px-4 py-4 space-y-3">
         {items.map((it, i) => {
-          let host = "";
-          try {
-            host = new URL(it.link).hostname.replace(/^www\./, "");
-          } catch {}
+          const ago = it.pubDate ? timeAgo(it.pubDate, now) : "";
           return (
             <li key={it.id} className="leading-snug">
               <a
@@ -50,7 +66,7 @@ export default async function Home({ searchParams }: PageProps) {
               >
                 {i + 1}. {it.title}
               </a>
-              {host && <span className="ml-2 text-xs opacity-60">({host})</span>}
+              {ago && <span className="ml-2 text-xs opacity-60">({ago})</span>}
             </li>
           );
         })}
