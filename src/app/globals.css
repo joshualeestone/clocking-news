@@ -6,11 +6,6 @@
 :root { --font-scale: 1; }
 html { font-size: calc(16px * var(--font-scale)); }
 
-/* Link colors */
-a { color: #ffffff; text-decoration: underline; }
-a:visited { color: #cccccc; }
-html.dark a:visited { color: #333333; }
-
 /* Subtle animated header gradient (living header) */
 .animated-header {
   background: linear-gradient(90deg, #dc2626, #e11d48, #a21caf);
@@ -33,35 +28,33 @@ html.dark a:visited { color: #333333; }
   box-shadow: 0 0 0 0 rgba(34,197,94,.6);
   animation: pulseSoft 2.6s ease-out infinite;
 }
-@keyframes pulseSo
-/* Global link styles */
-
-/* Light mode (default) */
-a {
-  color: #000000;       /* default black */
-  text-decoration: none; /* no underline */
+@keyframes pulseSoft {
+  0%   { box-shadow: 0 0 0 0 rgba(34,197,94,.6); }
+  70%  { box-shadow: 0 0 0 10px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
 }
 
-a:hover {
-  color: #999999;       /* hover gray */
+/* --- Global link + body styles --- */
+@layer base {
+  body {
+    @apply bg-white text-black dark:bg-black dark:text-white;
+  }
+
+  a {
+    @apply no-underline;
+  }
+
+  /* Light mode links */
+  a {
+    color: #000000;
+  }
+  a:hover { color: #999999; }
+  a:visited { color: #cccccc; }
+
+  /* Dark mode links */
+  .dark a {
+    color: #ffffff;
+  }
+  .dark a:hover { color: #666666; }
+  .dark a:visited { color: #333333; }
 }
-
-a:visited {
-  color: #cccccc;       /* visited light gray */
-}
-
-/* Dark mode */
-.dark a {
-  color: #ffffff;       /* default white */
-  text-decoration: none;
-}
-
-.dark a:hover {
-  color: #666666;       /* hover medium gray */
-}
-
-.dark a:visited {
-  color: #333333;       /* visited dark gray */
-}
-
-
