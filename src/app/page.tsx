@@ -1,4 +1,3 @@
-cat > src/app/page.tsx <<'EOF'
 import Link from "next/link";
 import { readAllFeeds } from "@/lib/rss";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -6,9 +5,7 @@ import { MAX_ITEMS } from "@/lib/config";
 
 export const dynamic = "force-dynamic"; // do not pre-render at build; render on request
 
-type PageProps = {
-  searchParams?: { limit?: string };
-};
+type PageProps = { searchParams?: { limit?: string } };
 
 export default async function Home({ searchParams }: PageProps) {
   const requested = Number(searchParams?.limit ?? "");
@@ -45,7 +42,12 @@ export default async function Home({ searchParams }: PageProps) {
           try { host = new URL(it.link).hostname.replace(/^www\./, ""); } catch {}
           return (
             <li key={it.id} className="leading-snug">
-              <a href={it.link} target="_blank" rel="noopener noreferrer" className="underline hover:opacity-80">
+              <a
+                href={it.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:opacity-80"
+              >
                 {i + 1}. {it.title}
               </a>
               {host && <span className="ml-2 text-xs opacity-60">({host})</span>}
@@ -56,12 +58,7 @@ export default async function Home({ searchParams }: PageProps) {
 
       {canShowMore && (
         <div className="px-4 pb-8">
-          <Link prefetch={false} href={`/?limit=${nextLimit}`} className="inline-block text-sm underline opacity-80 hover:opacity-100">
-            Show 50 more
-          </Link>
-        </div>
-      )}
-    </main>
-  );
-}
-EOF
+          <Link
+            prefetch={false}
+            href={`/?limit=${nextL
+
