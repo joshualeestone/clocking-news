@@ -11,7 +11,6 @@ export const FEEDS: string[] = fromEnv.length ? fromEnv : [
   "https://www.aljazeera.com/xml/rss/all.xml",
   "https://www.reuters.com/world/us/rss",
   "https://www.reuters.com/world/rss",
-  "https://www.theverge.com/rss/index.xml",
   "https://www.cnbc.com/id/100003114/device/rss/rss.html",
   "https://www.rollingstone.com/music/music-news/feed/",
   "https://www.tmz.com/rss.xml",
