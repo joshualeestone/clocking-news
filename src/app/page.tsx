@@ -5,7 +5,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 export const revalidate = 60; // rebuild at most once per minute
 
 export default async function Home() {
-  const items = await readAllFeeds(50);
+  const items = await readAllFeeds(100);
 
   return (
     <main className="min-h-screen bg-white text-black dark:bg-black dark:text-white">
