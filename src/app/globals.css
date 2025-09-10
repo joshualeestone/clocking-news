@@ -34,3 +34,16 @@ html.dark a:visited { color: #333333; }
   animation: pulseSoft 2.6s ease-out infinite;
 }
 @keyframes pulseSo
+/* Link styles */
+a {
+  @apply text-blue-600 dark:text-blue-400;
+}
+
+a:visited {
+  @apply text-gray-600 dark:visited:text-gray-400;
+}
+
+a:hover {
+  @apply underline;
+}
+
