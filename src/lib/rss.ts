@@ -7,21 +7,13 @@ const parser = new XMLParser({
   parseTagValue: true,
 });
 
-// Normalize a single item from various RSS formats
 function normalizeItem(raw: any, source: string) {
-  const item = raw || {};
-  const title = String(item.title || "").trim();
+  const title = String(raw?.title ?? "").trim();
   const link =
-    item.link?.["@_href"] || // some Atom feeds
-    item.link ||
-    item.guid?.["@_isPermaLink"] === "true" ? item.guid : item.guid ||
-    "";
+    raw?.link?.["@_href"] || raw?.link ||
+    (raw?.guid?.["@_isPermaLink"] === "true" ? raw?.guid : raw?.guid) || "";
   const pub =
-    item.pubDate ||
-    item.published ||
-    item.updated ||
-    item["dc:date"] ||
-    null;
+    raw?.pubDate || raw?.published || raw?.updated || raw?.["dc:date"] || null;
 
   return {
     id: (link || title).slice(0, 400),
@@ -36,27 +28,23 @@ async function readOne(url: string) {
   try {
     const res = await fetch(url, { next: { revalidate: 60 } });
     const xml = await res.text();
-    const json = parser.parse(xml);
-
-    // try rss -> channel -> item OR atom -> feed -> entry
-    const channelItems =
-      json?.rss?.channel?.item ??
-      json?.feed?.entry ??
-      json?.channel?.item ??
+    const data = parser.parse(xml);
+    const items =
+      data?.rss?.channel?.item ??
+      data?.feed?.entry ??
+      data?.channel?.item ??
       [];
-
-    const items = Array.isArray(channelItems) ? channelItems : [channelItems];
-    return items.map((it: any) => normalizeItem(it, url));
+    const arr = Array.isArray(items) ? items : [items];
+    return arr.map((it) => normalizeItem(it, url));
   } catch {
     return [];
   }
 }
 
 export async function readAllFeeds(limit = 50) {
-  const all = await Promise.all(FEEDS.map(readOne));
-  const flat = all.flat().filter((x) => x.title && x.link);
+  const lists = await Promise.all(FEEDS.map(readOne));
+  const flat = lists.flat().filter((x) => x.title && x.link);
 
-  // simple de-dupe by normalized link
   const seen = new Set<string>();
   const deduped = flat.filter((x) => {
     const key = x.link.replace(/^https?:\/\//, "").replace(/\/$/, "");
@@ -65,8 +53,6 @@ export async function readAllFeeds(limit = 50) {
     return true;
   });
 
-  // sort by time (desc)
   deduped.sort((a, b) => b.pubDate - a.pubDate);
-
   return deduped.slice(0, limit);
 }
